@@ -1,17 +1,13 @@
-buildscript {
-    repositories {
-        mavenCentral()
-        maven { url "https://plugins.gradle.org/m2/" }
-    }
+plugins {
+    id 'java-gradle-plugin'
+    id 'groovy'
+    id 'maven'
+    id 'idea'
 }
 
 repositories {
     mavenCentral()
 }
-
-apply plugin: 'groovy'
-apply plugin: 'maven'
-apply plugin: 'idea'
 
 group 'com.conas'
 sourceCompatibility = 1.8
@@ -28,5 +24,34 @@ idea {
         jdkName = sourceCompatibility
         languageLevel = targetCompatibility
         vcs = 'Git'
+    }
+}
+
+gradlePlugin {
+    plugins {
+        conas {
+            id='conas'
+            implementationClass='com.conas.gradle.ConasPlugin'
+        }
+
+        conasDependency {
+            id='conas.dependency'
+            implementationClass='com.conas.gradle.ConasDependencyPlugin'
+        }
+
+        conasIdea {
+            id='conas.idea'
+            implementationClass='com.conas.gradle.ConasIdeaPlugin'
+        }
+
+        conasRelease {
+            id='conas.release'
+            implementationClass='com.conas.gradle.ConasReleasePlugin'
+        }
+
+        conasSources {
+            id='conas.sources'
+            implementationClass='com.conas.gradle.ConasSourcesPlugin'
+        }
     }
 }
