@@ -7,6 +7,7 @@ plugins {
 
 repositories {
     mavenCentral()
+    jcenter()
 }
 
 group 'com.conas'
@@ -17,6 +18,13 @@ dependencies {
     compile gradleApi()
     compile localGroovy()
     compile 'org.yaml:snakeyaml:1.20'
+    compile 'com.squareup.retrofit2:retrofit:2.4.0'
+    compile 'com.squareup.retrofit2:converter-scalars:2.4.0'
+    compile 'com.squareup.okhttp3:logging-interceptor:3.9.0'
+    compile 'io.swagger:swagger-codegen:2.3.1'
+    compile ('org.jfrog.buildinfo:build-info-extractor-gradle:4.7.0') {
+        exclude module: 'groovy-all'
+    }
 }
 
 idea {
@@ -44,14 +52,24 @@ gradlePlugin {
             implementationClass='com.conas.gradle.ConasIdeaPlugin'
         }
 
+        conasOpenApi {
+            id='conas.openApi'
+            implementationClass='com.conas.gradle.openapi.ConasOpenApiPlugin'
+        }
+
         conasRelease {
             id='conas.release'
             implementationClass='com.conas.gradle.ConasReleasePlugin'
         }
 
-        conasSources {
+        conasSourcesJar {
             id='conas.sources'
-            implementationClass='com.conas.gradle.ConasSourcesPlugin'
+            implementationClass='com.conas.gradle.sources.ConasSourcesJarPlugin'
+        }
+
+        conasJavadocJar{
+            id='conas.sources'
+            implementationClass='com.conas.gradle.sources.ConasJavadocJarPlugin'
         }
     }
 }
