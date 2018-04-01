@@ -1,3 +1,14 @@
 ext {
+    snakeYamlVersion = '1.20'
+    retrofitVersion = '2.4.0'
+    swaggerVersion = '2.3.1'
 
+    def libs = [
+            snakeYaml: "org.yaml:snakeyaml:$snakeYamlVersion",
+            retrofit: "com.squareup.retrofit2:retrofit:$retrofitVersion",
+            retrofitScalars: "com.squareup.retrofit2:converter-scalars:$retrofitVersion",
+            swagger: "io.swagger:swagger-codegen:$swaggerVersion"
+    ]
+
+    libraries = libs
 }

@@ -1,4 +1,4 @@
-package com.conas.gradle
+package com.conas.gradle.idea
 
 import org.gradle.api.Plugin
 import org.gradle.api.Project
@@ -12,7 +12,7 @@ class ConasIdeaPlugin implements Plugin<Project> {
     void apply(Project project) {
         project.plugins.apply(IdeaPlugin).with { IdeaPlugin ideaPlugin ->
             if(project.rootProject != project) {
-                return;
+                return
             }
 
             project.plugins.withType(JavaPlugin) { JavaPlugin javaPlugin ->

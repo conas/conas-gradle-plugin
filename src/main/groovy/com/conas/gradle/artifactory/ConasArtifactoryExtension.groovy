@@ -1,8 +1,10 @@
 package com.conas.gradle.artifactory
 
 
-class ConasArtifactoryExtension {
+class ConasArtifactoryExtension implements Artifactory {
 
-    public String url;
-    public String repository;
+    String url
+    String repository
+    String username
+    String password
 }

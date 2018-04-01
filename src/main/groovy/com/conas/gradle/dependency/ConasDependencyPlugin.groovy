@@ -1,4 +1,4 @@
-package com.conas.gradle
+package com.conas.gradle.dependency
 
 import org.gradle.api.Plugin
 import org.gradle.api.Project

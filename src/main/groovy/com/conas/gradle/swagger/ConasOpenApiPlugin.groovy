@@ -1,4 +1,4 @@
-package com.conas.gradle.openapi
+package com.conas.gradle.swagger
 
 import org.gradle.api.Plugin
 import org.gradle.api.Project
@@ -11,19 +11,23 @@ class ConasOpenApiPlugin implements Plugin<Project> {
     @Override
     void apply(Project project) {
         project.extensions.create(ConasOpenApiExtension.EXTENSION_NAME, ConasOpenApiExtension)
-        project.task('openApi', type: ConasOpenApiTask)
-        project.task('openApiRelease', type: ConasOpenApiReleaseTask)
+
+        def generationTask = project.task('openApiGeneration', type: OpenApiGenerationTask)
+        def releaseTask = project.task('openApiRelease', type: OpenApiReleaseTask)
+        releaseTask.dependsOn(generationTask)
+
+        project.task('openApiDownload', type: OpenApiDownloadTask)
 
         project.plugins.withType(MavenPublishPlugin) {
             project.publishing {
                 publications {
                     conas(MavenPublication) {
-                        def openApiExtension =
-                                (ConasOpenApiExtension) project
-                                        .extensions
-                                        .getByName(ConasOpenApiExtension.EXTENSION_NAME)
+                        artifact (
+                                OpenApiReleaseTask.getApiFile(project, BaseOpenApiTask.retrieveExtension(project))) {
 
-                        artifact new File(project.buildDir.absolutePath, openApiExtension.outputDir + '/swagger.json')
+                            extension 'json'
+                            classifier 'api_schema'
+                        }
                     }
                 }
             }

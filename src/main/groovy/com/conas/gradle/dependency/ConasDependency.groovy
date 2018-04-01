@@ -1,4 +1,4 @@
-package com.conas.gradle
+package com.conas.gradle.dependency
 
 import groovy.text.SimpleTemplateEngine
 import groovy.text.Template

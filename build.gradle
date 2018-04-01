@@ -14,17 +14,15 @@ group 'com.conas'
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
+apply from: './libraries.gradle'
+
 dependencies {
     compile gradleApi()
     compile localGroovy()
-    compile 'org.yaml:snakeyaml:1.20'
-    compile 'com.squareup.retrofit2:retrofit:2.4.0'
-    compile 'com.squareup.retrofit2:converter-scalars:2.4.0'
-    compile 'com.squareup.okhttp3:logging-interceptor:3.9.0'
-    compile 'io.swagger:swagger-codegen:2.3.1'
-    compile ('org.jfrog.buildinfo:build-info-extractor-gradle:4.7.0') {
-        exclude module: 'groovy-all'
-    }
+    compile libraries.snakeYaml
+    compile libraries.retrofit
+    compile libraries.retrofitScalars
+    compile libraries.swagger
 }
 
 idea {
@@ -44,22 +42,17 @@ gradlePlugin {
 
         conasDependency {
             id='conas.dependency'
-            implementationClass='com.conas.gradle.ConasDependencyPlugin'
+            implementationClass='com.conas.gradle.dependency.ConasDependencyPlugin'
         }
 
         conasIdea {
             id='conas.idea'
-            implementationClass='com.conas.gradle.ConasIdeaPlugin'
+            implementationClass='com.conas.gradle.idea.ConasIdeaPlugin'
         }
 
         conasOpenApi {
             id='conas.openApi'
-            implementationClass='com.conas.gradle.openapi.ConasOpenApiPlugin'
-        }
-
-        conasRelease {
-            id='conas.release'
-            implementationClass='com.conas.gradle.ConasReleasePlugin'
+            implementationClass='com.conas.gradle.swagger.ConasOpenApiPlugin'
         }
 
         conasSourcesJar {
@@ -67,9 +60,14 @@ gradlePlugin {
             implementationClass='com.conas.gradle.sources.ConasSourcesJarPlugin'
         }
 
-        conasJavadocJar{
+        conasJavadocJar {
             id='conas.sources'
             implementationClass='com.conas.gradle.sources.ConasJavadocJarPlugin'
+        }
+
+        conasArtifactory {
+            id='conas.artifactory'
+            implementationClass='com.conas.gradle.artifactory.ConasArtifactoryPlugin'
         }
     }
 }

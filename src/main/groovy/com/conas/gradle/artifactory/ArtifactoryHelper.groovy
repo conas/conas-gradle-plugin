@@ -1,52 +1,64 @@
 package com.conas.gradle.artifactory
 
+import org.codehaus.groovy.runtime.InvokerHelper
 import org.gradle.api.Project
-import retrofit2.Retrofit
-import retrofit2.converter.scalars.ScalarsConverterFactory
-
 
 class ArtifactoryHelper {
 
-    public static final String ARTIFACTORY_USERNAME = 'conas.artifactory.username'
-    public static final String ARTIFACTORY_PASSWORD = 'conas.artifactory.password'
+    private static final String BASE = 'conas.artifactory'
+    public static final String ARTIFACTORY_URL = "${BASE}.url"
+    public static final String ARTIFACTORY_REPOSITORY = "${BASE}.repository"
+    public static final String ARTIFACTORY_USERNAME = "${BASE}.username"
+    public static final String ARTIFACTORY_PASSWORD = "${BASE}.password"
 
-    static ArtifactoryCredentials artifactoryCredentials(Project project) {
+    static ArtifactoryModel artifactoryGlobal(Project project) {
+        String url = (String) project.properties.get(ARTIFACTORY_URL)
+        String repository = (String) project.properties.get(ARTIFACTORY_REPOSITORY)
         String username = (String) project.properties.get(ARTIFACTORY_USERNAME)
         String password = (String) project.properties.get(ARTIFACTORY_PASSWORD)
 
-        if(!username) {
-            throw new MissingPropertyException("Missing property \"$ARTIFACTORY_USERNAME\"")
-        }
-        if(!password) {
-            throw new MissingPropertyException("Missing property \"$ARTIFACTORY_PASSWORD\"")
-        }
-
-        return new ArtifactoryCredentials(username, password)
+        return new ArtifactoryModel(url, repository, username, password)
     }
 
-    static ArtifactoryApi artifactoryApi(project) {
-        Retrofit retrofit =
-                new Retrofit.Builder()
-                        .baseUrl('http://35.204.110.148/artifactory/example-repo-local/')
-                        .addConverterFactory(ScalarsConverterFactory.create())
-                        .build();
-
-        return retrofit.create(ArtifactoryApi);
+    static ArtifactoryModel merge(Artifactory m1, Artifactory m2) {
+        return (ArtifactoryModel) merge(new ArtifactoryModel(), { key, value -> value != null  }, m1, m2)
     }
 
-    static class ArtifactoryCredentials {
-        public String username;
-        public String password;
+    static <T> T merge(T target, Closure closure, T... sources) {
+        for(def source in sources) {
+            source.properties.each { key, value ->
+                if((key as String) in ["metaClass","class"]) {
+                    return
+                }
+                final MetaClass metaClass = InvokerHelper.getMetaClass(target)
 
-        ArtifactoryCredentials(String username, String password) {
-            this.username = username
-            this.password = password
+                if(metaClass.hasProperty(target, key as String)) {
+                    if (closure(key, value)) {
+                        metaClass.setProperty(target, key as String, value)
+                    }
+                }
+            }
         }
+        return target
+    }
 
-        String basicAuthorization() {
-            def basic = username + ':' + password
-            def encoded = Base64.encoder.encode(basic.getBytes())
-            return new String(encoded)
+    static void validate(ArtifactoryModel model) {
+       propsEach(model) { key, value ->
+           if (value == null) {
+               throw new ArtifactoryException("Missing property \"${key}\"")
+           }
+       }
+    }
+
+    static <T>void propsEach(T obj, Closure closure) {
+        obj.properties.each { key, value ->
+            if(closure.maximumNumberOfParameters != 2) {
+                return
+            }
+            if((key as String) in ["metaClass","class"]) {
+                return
+            }
+            closure(key, value)
         }
     }
 }
