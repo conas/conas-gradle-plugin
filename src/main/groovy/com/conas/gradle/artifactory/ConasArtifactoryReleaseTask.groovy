@@ -22,7 +22,15 @@ class ConasArtifactoryReleaseTask extends DefaultTask {
     }
 
     private String releaseName(String fileName) {
-        return "${project.group}/${project.version}/${fileName}"
+        return "${projectGroup()}/${project.name}/${project.version}/${fileName}"
+    }
+
+    private String pomReleaseName() {
+        return releaseName("${project.name}-${project.version}.pom")
+    }
+
+    private String projectGroup() {
+        return (project.group as String).split('\\.').join('/')
     }
 
     private void doRelease(ConasArtifactoryExtension artifactoryExtension,
@@ -33,10 +41,21 @@ class ConasArtifactoryReleaseTask extends DefaultTask {
 
         ArtifactoryHelper.validate(artifactory)
 
-        for(publication in publishingExtension.publications.asList()) {
-            for(artifact in ((DefaultMavenPublication) publication).artifacts) {
+        for(def publication in publishingExtension.publications.asList()) {
+            final def mavenPublication = (publication as DefaultMavenPublication)
+            final def normalizedPublication = mavenPublication.asNormalisedPublication()
+
+            final def pomFile = normalizedPublication.getPomFile()
+            if(pomFile.exists()) {
+                    ArtifactoryApiCaller.push(artifactory,
+                                              pomReleaseName(),
+                                              pomFile,
+                                              resolveMediaType('pom'))
+            }
+
+            for(def artifact in mavenPublication.artifacts) {
                 if(artifact.file.isDirectory()) {
-                    throw new RuntimeException('Cannot publish a directory')
+                    throw new ArtifactoryException('Cannot publish a directory')
                 }
 
                 ArtifactoryApiCaller.push(artifactory,
@@ -52,6 +71,9 @@ class ConasArtifactoryReleaseTask extends DefaultTask {
         switch (extension) {
             case 'jar':
                 mediaType = 'application/java-archive'
+                break;
+            case 'pom':
+                mediaType = 'application/pom'
                 break;
             case 'json':
                 mediaType = 'application/json'

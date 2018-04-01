@@ -27,8 +27,9 @@ class OpenApiReleaseTask extends BaseOpenApiTask {
         final def artifactory = artifactoryModel(project, extension)
 
         ArtifactoryApiCaller.push(artifactory,
-                                   releaseName(project, extension),
-                                   getApiFile(project, extension),
-                                   MediaType.parse('application/json'))
+                                  releaseName(project, extension),
+                                  getApiFile(project, extension),
+                                  MediaType.parse('application/json'),
+                                 true)
     }
 }

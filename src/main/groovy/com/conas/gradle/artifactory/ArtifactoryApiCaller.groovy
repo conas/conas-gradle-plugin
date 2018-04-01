@@ -14,7 +14,7 @@ class ArtifactoryApiCaller {
                      String releaseName,
                      File file,
                      MediaType mediaType = null,
-                     boolean verbose = true) {
+                     boolean verbose = false) {
 
         if(mediaType == null) {
             mediaType = MediaType.parse(Files.probeContentType(file.toPath()))
@@ -33,8 +33,9 @@ class ArtifactoryApiCaller {
             return
         }
 
+        println("Successfully published: ${releaseName}")
+
         if(verbose) {
-            println("Successfully published: ${releaseName}")
             println(response.body().string())
         }
     }

@@ -13,16 +13,29 @@ class ConasArtifactoryPlugin implements Plugin<Project> {
     void apply(Project project) {
         project.extensions.create('conasArtifactory', ConasArtifactoryExtension)
         def releaseTask = project.task('release', type: ConasArtifactoryReleaseTask)
+        def buildTask
 
+        // In case Spring boot plugin is present lets use the
         if(project.plugins.hasPlugin(SPRING_BOOT_PLUGIN)) {
-            def bootJar = project.tasks.getByName('bootJar')
-            releaseTask.dependsOn(bootJar)
+            buildTask = project.tasks.getByName('bootJar')
+        } else {
+            buildTask = project.tasks.getByName('build')
+        }
 
-            project.plugins.withType(MavenPublishPlugin) {
-                project.publishing {
-                    publications {
-                        conas(MavenPublication) {
+        releaseTask.dependsOn(buildTask)
+
+        project.plugins.withType(MavenPublishPlugin) {
+            project.publishing {
+                publications {
+                    conas(MavenPublication) {
+                        if(project.plugins.hasPlugin(SPRING_BOOT_PLUGIN)) {
                             artifact project.tasks.bootJar
+                        } else {
+                            artifact project.tasks.jar
+                        }
+
+                        pom.withXml {
+                            asNode().appendNode('description', 'Conas release')
                         }
                     }
                 }
@@ -43,7 +56,7 @@ class ConasArtifactoryPlugin implements Plugin<Project> {
 
         project.repositories {
             maven {
-                url artifactory.url
+                url artifactory.repositoryUrl()
 
                 credentials {
                     username artifactory.username
