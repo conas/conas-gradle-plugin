@@ -4,6 +4,7 @@ import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.publish.maven.MavenPublication
 import org.gradle.api.publish.maven.plugins.MavenPublishPlugin
+import org.gradle.api.publish.maven.tasks.GenerateMavenPom
 
 class ConasArtifactoryPlugin implements Plugin<Project> {
 
@@ -36,31 +37,17 @@ class ConasArtifactoryPlugin implements Plugin<Project> {
 
                         pom.withXml {
                             asNode().appendNode('description', 'Conas release')
+
+                            final def dependenciesNode = asNode().appendNode('dependencies')
+
+                            project.configurations.compile.allDependencies.each {
+                                def dependencyNode = dependenciesNode.appendNode('dependency')
+                                dependencyNode.appendNode('groupId', it.group)
+                                dependencyNode.appendNode('artifactId', it.name)
+                                dependencyNode.appendNode('version', it.version)
+                            }
                         }
                     }
-                }
-            }
-        }
-
-        initializeArtifactoryRepo(project)
-    }
-
-    private void initializeArtifactoryRepo(Project project) {
-        final def artifactory = ArtifactoryHelper.artifactoryGlobal(project)
-
-        try {
-            ArtifactoryHelper.validate(artifactory)
-        } catch (ArtifactoryException ignored) {
-            return
-        }
-
-        project.repositories {
-            maven {
-                url artifactory.repositoryUrl()
-
-                credentials {
-                    username artifactory.username
-                    password artifactory.username
                 }
             }
         }

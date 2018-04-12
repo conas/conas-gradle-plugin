@@ -1,9 +1,11 @@
 package com.conas.gradle.artifactory
 
 import okhttp3.MediaType
+import org.apache.commons.io.FileUtils
 import org.gradle.api.DefaultTask
 import org.gradle.api.publish.PublishingExtension
 import org.gradle.api.publish.maven.internal.publication.DefaultMavenPublication
+import org.gradle.api.publish.maven.tasks.GenerateMavenPom
 import org.gradle.api.tasks.TaskAction
 
 class ConasArtifactoryReleaseTask extends DefaultTask {
@@ -42,6 +44,12 @@ class ConasArtifactoryReleaseTask extends DefaultTask {
         ArtifactoryHelper.validate(artifactory)
 
         for(def publication in publishingExtension.publications.asList()) {
+            // NOTE (all) rethink this part
+            def generatePomTask = project.tasks.getByName("generatePomFileForConasPublication") as GenerateMavenPom
+            if(generatePomTask) {
+                generatePomTask.doGenerate()
+            }
+
             final def mavenPublication = (publication as DefaultMavenPublication)
             final def normalizedPublication = mavenPublication.asNormalisedPublication()
 

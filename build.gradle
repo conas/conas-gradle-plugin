@@ -69,5 +69,10 @@ gradlePlugin {
             id='conas.artifactory'
             implementationClass='com.conas.gradle.artifactory.ConasArtifactoryPlugin'
         }
+
+        conasArtifactoryRepo {
+            id='conas.artifactory.repo'
+            implementationClass='com.conas.gradle.artifactory.ConasArtifactoryRepoPlugin'
+        }
     }
 }
