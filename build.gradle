@@ -1,9 +1,24 @@
-plugins {
-    id 'java-gradle-plugin'
-    id 'groovy'
-    id 'maven'
-    id 'idea'
+buildscript {
+    repositories {
+        mavenLocal()
+        mavenCentral()
+    }
+
+    dependencies {
+        classpath 'com.conas:conas-gradle-plugin:1.1-SNAPSHOT'
+    }
 }
+
+plugins {
+    id 'groovy'
+    id 'maven-publish'
+    id 'idea'
+    id 'java-gradle-plugin'
+}
+
+// to self apply plugin we have to do it this way,
+// ./gr due to issues with pluginManagement section configuration
+apply plugin: 'conas.artifactory'
 
 repositories {
     mavenCentral()
@@ -17,12 +32,12 @@ targetCompatibility = 1.8
 apply from: './libraries.gradle'
 
 dependencies {
-    compile gradleApi()
-    compile localGroovy()
-    compile libraries.snakeYaml
-    compile libraries.retrofit
-    compile libraries.retrofitScalars
-    compile libraries.swagger
+    implementation gradleApi()
+    implementation localGroovy()
+    implementation libraries.snakeYaml
+    implementation libraries.retrofit
+    implementation libraries.retrofitScalars
+    implementation libraries.swagger
 }
 
 idea {

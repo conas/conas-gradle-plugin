@@ -86,6 +86,9 @@ class ConasArtifactoryReleaseTask extends DefaultTask {
             case 'json':
                 mediaType = 'application/json'
                 break;
+            case 'yml':
+                mediaType = 'application/yml'
+                break;
         }
 
         if(mediaType == null) {
