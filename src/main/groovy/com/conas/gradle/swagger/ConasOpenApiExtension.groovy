@@ -2,7 +2,6 @@ package com.conas.gradle.swagger
 
 import com.conas.gradle.artifactory.ArtifactoryModel
 
-
 class ConasOpenApiExtension {
     public static final String EXTENSION_NAME = 'conasOpenApi';
 

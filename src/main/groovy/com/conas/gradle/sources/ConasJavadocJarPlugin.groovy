@@ -7,7 +7,6 @@ import org.gradle.api.publish.maven.plugins.MavenPublishPlugin
 import org.gradle.api.tasks.javadoc.Javadoc
 import org.gradle.jvm.tasks.Jar
 
-
 class ConasJavadocJarPlugin implements Plugin<Project> {
 
     @Override

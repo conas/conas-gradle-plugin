@@ -7,7 +7,6 @@ import org.gradle.api.publish.maven.MavenPublication
 import org.gradle.api.publish.maven.plugins.MavenPublishPlugin
 import org.gradle.jvm.tasks.Jar
 
-
 class ConasSourcesJarPlugin implements Plugin<Project> {
 
     @Override

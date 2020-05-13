@@ -5,7 +5,6 @@ import com.conas.gradle.artifactory.ArtifactoryModel
 import org.gradle.api.DefaultTask
 import org.gradle.api.Project
 
-
 abstract class BaseOpenApiTask extends DefaultTask {
 
     ConasOpenApiExtension extension() {

@@ -1,7 +1,6 @@
 package com.conas.gradle.artifactory
 
 import okhttp3.MediaType
-import org.apache.commons.io.FileUtils
 import org.gradle.api.DefaultTask
 import org.gradle.api.publish.PublishingExtension
 import org.gradle.api.publish.maven.internal.publication.DefaultMavenPublication
@@ -15,7 +14,7 @@ class ConasArtifactoryReleaseTask extends DefaultTask {
         doRelease(artifactoryExtension(), publishingExtension())
     }
 
-    private ConasArtifactoryExtension artifactoryExtension() {
+    public ConasArtifactoryExtension artifactoryExtension() {
         return (ConasArtifactoryExtension) project.extensions.getByType(ConasArtifactoryExtension)
     }
 
@@ -87,7 +86,7 @@ class ConasArtifactoryReleaseTask extends DefaultTask {
                 mediaType = 'application/json'
                 break;
             case 'yml':
-                mediaType = 'application/yml'
+                mediaType = 'application/x-yaml'
                 break;
         }
 

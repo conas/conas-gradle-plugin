@@ -7,4 +7,5 @@ class ConasArtifactoryExtension implements Artifactory {
     String repository
     String username
     String password
+    boolean ignoreBuildArtifacts = false
 }

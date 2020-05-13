@@ -2,10 +2,19 @@ buildscript {
     repositories {
         mavenLocal()
         mavenCentral()
+
+        maven {
+            credentials {
+                username project.property('conas.artifactory.username')
+                password project.property('conas.artifactory.password')
+            }
+
+            url "${project.property('conas.artifactory.url')}/${project.property('conas.artifactory.repository')}"
+        }
     }
 
     dependencies {
-        classpath 'com.conas:conas-gradle-plugin:1.1-SNAPSHOT'
+        classpath 'com.conas:conas-gradle-plugin:1.3-SNAPSHOT'
     }
 }
 
@@ -17,7 +26,7 @@ plugins {
 }
 
 // to self apply plugin we have to do it this way,
-// ./gr due to issues with pluginManagement section configuration
+//  due to issues with pluginManagement section configuration
 apply plugin: 'conas.artifactory'
 
 repositories {
@@ -32,8 +41,8 @@ targetCompatibility = 1.8
 apply from: './libraries.gradle'
 
 dependencies {
-    implementation gradleApi()
-    implementation localGroovy()
+    api gradleApi()
+    api localGroovy()
     implementation libraries.snakeYaml
     implementation libraries.retrofit
     implementation libraries.retrofitScalars

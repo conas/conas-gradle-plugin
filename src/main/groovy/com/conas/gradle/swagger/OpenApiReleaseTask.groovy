@@ -7,7 +7,6 @@ import org.gradle.api.tasks.TaskAction
 
 import java.nio.file.Paths
 
-
 class OpenApiReleaseTask extends BaseOpenApiTask {
 
     private static final String API_FILE_NAME = 'swagger.json'

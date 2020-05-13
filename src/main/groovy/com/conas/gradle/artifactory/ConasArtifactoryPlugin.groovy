@@ -2,9 +2,9 @@ package com.conas.gradle.artifactory
 
 import org.gradle.api.Plugin
 import org.gradle.api.Project
+import org.gradle.api.artifacts.DependencySet
 import org.gradle.api.publish.maven.MavenPublication
 import org.gradle.api.publish.maven.plugins.MavenPublishPlugin
-import org.gradle.api.publish.maven.tasks.GenerateMavenPom
 
 class ConasArtifactoryPlugin implements Plugin<Project> {
 
@@ -13,7 +13,7 @@ class ConasArtifactoryPlugin implements Plugin<Project> {
     @Override
     void apply(Project project) {
         project.extensions.create('conasArtifactory', ConasArtifactoryExtension)
-        def releaseTask = project.task('release', type: ConasArtifactoryReleaseTask)
+        final def releaseTask = project.task('release', type: ConasArtifactoryReleaseTask)
         def buildTask
 
         // In case Spring boot plugin is present lets use the
@@ -24,6 +24,11 @@ class ConasArtifactoryPlugin implements Plugin<Project> {
         }
 
         releaseTask.dependsOn(buildTask)
+
+        if (releaseTask.artifactoryExtension().ignoreBuildArtifacts) {
+            println("Ignoring build artifacts")
+            return
+        }
 
         project.plugins.withType(MavenPublishPlugin) {
             project.publishing {
@@ -40,16 +45,30 @@ class ConasArtifactoryPlugin implements Plugin<Project> {
 
                             final def dependenciesNode = asNode().appendNode('dependencies')
 
-                            project.configurations.compile.allDependencies.each {
-                                def dependencyNode = dependenciesNode.appendNode('dependency')
-                                dependencyNode.appendNode('groupId', it.group)
-                                dependencyNode.appendNode('artifactId', it.name)
-                                dependencyNode.appendNode('version', it.version)
-                            }
+                            addDependencies(dependenciesNode, extractSet(project, 'compile'))
+                            addDependencies(dependenciesNode, extractSet(project, 'implementation'))
                         }
                     }
                 }
             }
+        }
+    }
+
+    private DependencySet extractSet(Project project, String property) {
+        return project.configurations[property].allDependencies
+    }
+
+    private void addDependencies (rootNode, DependencySet dependencySet) {
+        dependencySet.each {
+            // Note: figure out why we receive null artifacts here
+            if (it.group == null) {
+                return
+            }
+
+            final def node = rootNode.appendNode('dependency')
+            node.appendNode('groupId', it.group)
+            node.appendNode('artifactId', it.name)
+            node.appendNode('version', it.version)
         }
     }
 }
