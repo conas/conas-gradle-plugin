@@ -9,11 +9,7 @@ class ConasArtifactoryRepoPlugin implements Plugin<Project> {
     void apply(Project project) {
         final def artifactory = ArtifactoryHelper.artifactoryGlobal(project)
 
-        try {
-            ArtifactoryHelper.validate(artifactory)
-        } catch (ArtifactoryException ignored) {
-            return
-        }
+        ArtifactoryHelper.validate(artifactory)
 
         project.repositories {
             maven {
@@ -21,7 +17,7 @@ class ConasArtifactoryRepoPlugin implements Plugin<Project> {
 
                 credentials {
                     username artifactory.username
-                    password artifactory.username
+                    password artifactory.password
                 }
             }
         }

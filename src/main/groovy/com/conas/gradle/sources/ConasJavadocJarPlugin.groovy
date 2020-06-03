@@ -14,6 +14,7 @@ class ConasJavadocJarPlugin implements Plugin<Project> {
         def javadocTask = project.task('javadocJar', type: Jar) { Jar jar ->
             def javadoc = (Javadoc) project.tasks.getByName('javadoc')
             jar.dependsOn(javadoc)
+            // TODO: fix this
             jar.classifier = 'javadoc'
             jar.extension = 'jar'
             jar.from(javadoc.destinationDir)

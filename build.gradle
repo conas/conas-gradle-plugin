@@ -9,12 +9,12 @@ buildscript {
                 password project.property('conas.artifactory.password')
             }
 
-            url "${project.property('conas.artifactory.url')}/${project.property('conas.artifactory.repository')}"
+            url "${project.property('conas.artifactory.url')}/${project.property('conas.artifactory.repository')}/"
         }
     }
 
     dependencies {
-        classpath 'com.conas:conas-gradle-plugin:1.3-SNAPSHOT'
+        classpath 'com.conas:conas-gradle-plugin:1.1'
     }
 }
 
@@ -26,7 +26,7 @@ plugins {
 }
 
 // to self apply plugin we have to do it this way,
-//  due to issues with pluginManagement section configuration
+// due to issues with pluginManagement section configuration
 apply plugin: 'conas.artifactory'
 
 repositories {
@@ -43,6 +43,7 @@ apply from: './libraries.gradle'
 dependencies {
     api gradleApi()
     api localGroovy()
+
     implementation libraries.snakeYaml
     implementation libraries.retrofit
     implementation libraries.retrofitScalars

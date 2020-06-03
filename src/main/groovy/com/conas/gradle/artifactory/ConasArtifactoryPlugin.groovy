@@ -30,6 +30,7 @@ class ConasArtifactoryPlugin implements Plugin<Project> {
             return
         }
 
+        // Note: (all) rethink how to handle duplicates
         project.plugins.withType(MavenPublishPlugin) {
             project.publishing {
                 publications {

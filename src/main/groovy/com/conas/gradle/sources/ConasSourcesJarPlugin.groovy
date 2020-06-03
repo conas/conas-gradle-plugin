@@ -13,6 +13,7 @@ class ConasSourcesJarPlugin implements Plugin<Project> {
     void apply(Project project) {
         def sourcesTask = project.task("sourcesJar", type: Jar) { Jar jar ->
             def pluginConvention = project.convention.getPlugin(JavaPluginConvention)
+            // TODO: fix this
             jar.classifier = 'sources'
             jar.extension = 'jar'
             jar.from(pluginConvention.sourceSets.main.allSource)

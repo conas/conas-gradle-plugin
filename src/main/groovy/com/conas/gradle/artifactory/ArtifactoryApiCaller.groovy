@@ -28,7 +28,7 @@ class ArtifactoryApiCaller {
         final def response = call.execute()
 
         if(response.code() != 201) {
-            System.err.println("Error publishing to repository \"${artifactory.repository}\", " +
+            System.err.println("Error publishing to repository \"${artifactory.repositoryUrl()}\", " +
                                "statusCode: ${response.code()}")
             return
         }

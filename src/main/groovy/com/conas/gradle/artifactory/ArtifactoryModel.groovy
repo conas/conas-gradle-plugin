@@ -22,7 +22,8 @@ class ArtifactoryModel implements Artifactory {
     }
 
     String repositoryUrl() {
-        return "${url}${repository}/"
+        // Note: it is very important to end the url with '/'
+        return "${url}/${repository}/"
     }
 
     String basicAuthorization() {

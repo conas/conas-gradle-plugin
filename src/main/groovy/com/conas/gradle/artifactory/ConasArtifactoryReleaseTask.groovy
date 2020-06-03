@@ -14,7 +14,7 @@ class ConasArtifactoryReleaseTask extends DefaultTask {
         doRelease(artifactoryExtension(), publishingExtension())
     }
 
-    public ConasArtifactoryExtension artifactoryExtension() {
+    ConasArtifactoryExtension artifactoryExtension() {
         return (ConasArtifactoryExtension) project.extensions.getByType(ConasArtifactoryExtension)
     }
 
@@ -43,7 +43,7 @@ class ConasArtifactoryReleaseTask extends DefaultTask {
         ArtifactoryHelper.validate(artifactory)
 
         for(def publication in publishingExtension.publications.asList()) {
-            // NOTE (all) rethink this part
+            // Note: (all) rethink this part
             def generatePomTask = project.tasks.getByName("generatePomFileForConasPublication") as GenerateMavenPom
             if(generatePomTask) {
                 generatePomTask.doGenerate()
@@ -52,7 +52,7 @@ class ConasArtifactoryReleaseTask extends DefaultTask {
             final def mavenPublication = (publication as DefaultMavenPublication)
             final def normalizedPublication = mavenPublication.asNormalisedPublication()
 
-            final def pomFile = normalizedPublication.getPomFile()
+            final def pomFile = normalizedPublication.getPomArtifact().getFile()
             if(pomFile.exists()) {
                     ArtifactoryApiCaller.push(artifactory,
                                               pomReleaseName(),
